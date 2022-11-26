@@ -53,7 +53,7 @@ public final class CommunityBranchAgent {
         if (component == Component.CE) {
             redefineEdition(instrumentation, "org.sonar.core.platform.PlatformEditionProvider", redefineOptionalEditionGetMethod());
         } else if (component == Component.WEB) {
-            redefineEdition(instrumentation, "org.sonar.server.almsettings.MultipleAlmFeatureProvider", redefineConstructorEditionProviderField(EditionProvider.Edition.ENTERPRISE));
+            redefineEdition(instrumentation, "org.sonar.server.almsettings.MultipleAlmFeature", redefineConstructorSonarRuntimeField(EditionProvider.Edition.ENTERPRISE));
             redefineEdition(instrumentation, "org.sonar.server.newcodeperiod.ws.SetAction", redefineConstructorEditionProviderField(EditionProvider.Edition.DEVELOPER));
             redefineEdition(instrumentation, "org.sonar.server.newcodeperiod.ws.UnsetAction", redefineConstructorEditionProviderField(EditionProvider.Edition.DEVELOPER));
         }
@@ -105,6 +105,13 @@ public final class CommunityBranchAgent {
         return ctClass -> {
             CtConstructor ctConstructor = ctClass.getDeclaredConstructors()[0];
             ctConstructor.insertAfter("this.editionProvider = new com.github.mc1arke.sonarqube.plugin.CommunityPlatformEditionProvider(org.sonar.core.platform.EditionProvider.Edition." + edition.name() + ");");
+        };
+    }
+
+    private static Redefiner redefineConstructorSonarRuntimeField(EditionProvider.Edition edition) {
+        return ctClass -> {
+            CtConstructor ctConstructor = ctClass.getDeclaredConstructors()[0];
+            ctConstructor.insertAfter("this.sonarRuntime = new com.github.mc1arke.sonarqube.plugin.CommunitySonarRuntimeImpl(org.sonar.api.SonarEdition." + edition.name() + ");");
         };
     }
 

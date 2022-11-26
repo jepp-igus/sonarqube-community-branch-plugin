@@ -91,8 +91,6 @@ public class CommunityBranch implements Branch {
 
         if (main) {
             return effectiveKey;
-        } else if (BranchType.PULL_REQUEST == branchType) {
-            return ComponentDto.generatePullRequestKey(effectiveKey, pullRequestKey);
         } else {
             return ComponentDto.generateBranchKey(effectiveKey, name);
         }

@@ -28,6 +28,11 @@ import org.sonar.server.branch.BranchFeatureExtension;
 public class CommunityBranchFeatureExtension implements BranchFeatureExtension {
 
     @Override
+    public String getName() {
+        return "community-branch-feature";
+    }
+
+    @Override
     public boolean isEnabled() {
         return true;
     }

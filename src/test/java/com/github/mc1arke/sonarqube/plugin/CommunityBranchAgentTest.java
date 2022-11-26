@@ -25,7 +25,7 @@ import org.sonar.core.platform.EditionProvider;
 import org.sonar.core.platform.PlatformEditionProvider;
 import org.sonar.db.DbClient;
 import org.sonar.db.newcodeperiod.NewCodePeriodDao;
-import org.sonar.server.almsettings.MultipleAlmFeatureProvider;
+import org.sonar.server.almsettings.MultipleAlmFeature;
 import org.sonar.server.component.ComponentFinder;
 import org.sonar.server.newcodeperiod.ws.SetAction;
 import org.sonar.server.newcodeperiod.ws.UnsetAction;
@@ -63,13 +63,13 @@ public class CommunityBranchAgentTest {
         CommunityBranchAgent.premain("web", instrumentation);
 
         ArgumentCaptor<ClassFileTransformer> classFileTransformerArgumentCaptor = ArgumentCaptor.forClass(ClassFileTransformer.class);
-        verify(instrumentation).retransformClasses(MultipleAlmFeatureProvider.class);
+        verify(instrumentation).retransformClasses(MultipleAlmFeature.class);
         verify(instrumentation, times(3)).addTransformer(classFileTransformerArgumentCaptor.capture());
 
-        try (InputStream inputStream = MultipleAlmFeatureProvider.class.getResourceAsStream(MultipleAlmFeatureProvider.class.getSimpleName())) {
+        try (InputStream inputStream = MultipleAlmFeature.class.getResourceAsStream(MultipleAlmFeature.class.getSimpleName())) {
             byte[] input = IOUtils.toByteArray(inputStream);
-            byte[] result = classFileTransformerArgumentCaptor.getAllValues().get(0).transform(classLoader, MultipleAlmFeatureProvider.class.getName().replaceAll("\\.", "/"), getClass(), getClass().getProtectionDomain(), input);
-            Class<?> redefined = classLoader.loadClass(MultipleAlmFeatureProvider.class.getName(), result);
+            byte[] result = classFileTransformerArgumentCaptor.getAllValues().get(0).transform(classLoader, MultipleAlmFeature.class.getName().replaceAll("\\.", "/"), getClass(), getClass().getProtectionDomain(), input);
+            Class<?> redefined = classLoader.loadClass(MultipleAlmFeature.class.getName(), result);
 
             PlatformEditionProvider platformEditionProvider = mock(PlatformEditionProvider.class);
 
@@ -151,7 +151,7 @@ public class CommunityBranchAgentTest {
         CommunityBranchAgent.premain("web", instrumentation);
 
         ArgumentCaptor<ClassFileTransformer> classFileTransformerArgumentCaptor = ArgumentCaptor.forClass(ClassFileTransformer.class);
-        verify(instrumentation).retransformClasses(MultipleAlmFeatureProvider.class);
+        verify(instrumentation).retransformClasses(MultipleAlmFeature.class);
         verify(instrumentation, times(3)).addTransformer(classFileTransformerArgumentCaptor.capture());
 
         byte[] input = new byte[]{1, 2, 3, 4, 5, 6};
